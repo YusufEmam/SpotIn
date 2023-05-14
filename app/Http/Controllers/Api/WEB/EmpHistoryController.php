@@ -40,7 +40,6 @@ class EmpHistoryController extends Controller
             ->orderByRaw("attendances.att_Date DESC, attendances.att_Time DESC")
             ->get();
 
-            //AAAAAAA
 
             return response()->json(['status' => 200, 'message' => 'Attendance and Departure history', 'data' => $data], 200);
         }
