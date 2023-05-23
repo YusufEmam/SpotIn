@@ -12,21 +12,6 @@ use Illuminate\Support\Facades\Validator;
 
 class CheckoutController extends Controller
 {
-    // private function isLocationAllowed($latitude, $longitude)
-    // {
-    //     // //ALL EMPLOYEES CAN ATTEND AND DEPART FROM ALL BRANCHES OF THE COMPANY!
-    //     $branches = Branch::select("id", "latitude", "longitude", "distance")->whereIn("id", [3,2])->get();
-
-    //     // Calculate the distance between the user's location and each allowed coordinate
-    //     foreach ($branches as $branch) {
-    //         $distance = $this->calculateDistance($latitude, $longitude, $branch->latitude, $branch->longitude);
-    //         if ($distance <= $branch->distance) { // If the user's location is within what kilometers of an allowed coordinate
-    //             return true;
-    //         }
-    //     }
-    // }
-
-
     private function isInsidePolygon($polygon, $point)
     {
         $intersectCount = 0;

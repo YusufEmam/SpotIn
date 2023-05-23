@@ -44,7 +44,7 @@ class EmployeeController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 200);
         }
-        //msh fl database
+        
         $token = auth("emp_api")->attempt($validator->validated());
         if (!$token) {
             return api_response_not_found(406, "User data is required with correct password", null);

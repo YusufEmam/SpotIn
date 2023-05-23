@@ -8,25 +8,11 @@ use App\Models\Departure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 
 class CheckinController extends Controller
 {
-    // private function isLocationAllowed($latitude, $longitude)
-    // {
-    //     // //ALL EMPLOYEES CAN ATTEND AND DEPART FROM ALL BRANCHES OF THE COMPANY!
-    //     $branches = Branch::select("id", "latitude", "longitude", "distance")->whereIn("id", [3,2])->get();
-
-    //     // Calculate the distance between the user's location and each allowed coordinate
-    //     foreach ($branches as $branch) {
-    //         $distance = $this->calculateDistance($latitude, $longitude, $branch->latitude, $branch->longitude);
-    //         if ($distance <= $branch->distance) { // If the user's location is within what kilometers of an allowed coordinate
-    //             return true;
-    //         }
-    //     }
-    // }
-
-
     private function isInsidePolygon($polygon, $point)
     {
         $intersectCount = 0;
@@ -155,22 +141,23 @@ class CheckinController extends Controller
                 foreach ($polygon as $zone) {
                     // Check if the user's location is inside the polygon
                     if ($this->isInsidePolygon($zone["points"], $userLocation)) {
-                        // Check if the user has checked in before
-                        $last_attendance = Attendance::where('employee_id', $loggedInUserId)
-                            ->orderBy('id', 'desc')
-                            ->first();
-                        if ($last_attendance && $last_attendance->last_att_status == 'lst-1') {
-                            return response()->json(['status' => 403, 'message' => 'Cannot check in, checkout first!'], 200);
+                        // Check if the user has already attended on the current day
+                        $currentDate = Carbon::now()->format('Y-m-d');
+                        $hasAttended = Attendance::where('employee_id', $loggedInUserId)
+                            ->whereDate('att_Date', $currentDate)
+                            ->exists();
+
+                        if ($hasAttended) {
+                            return response()->json(['status' => 403, 'message' => 'You have already attended today!'], 200);
                         }
 
+                        // Create a new attendance record
                         $attendance = new Attendance();
                         $attendance->att_Latitude = $request->input('latitude');
                         $attendance->att_Longitude = $request->input('longitude');
                         date_default_timezone_set("Africa/Cairo");
-                        $date = $request->att_Date;
-                        $time = $request->att_Time;
-                        $attendance->att_Date = date("Y/m/d", $date);
-                        $attendance->att_Time = date("h:i:s", $time);
+                        $attendance->att_Date = $currentDate;
+                        $attendance->att_Time = date("H:i:s", $request->att_Time);
                         $attendance->att_address = $request->input('address');
                         $attendance->last_att_status = "lst-1";
                         $attendance->att_comment = $request->comment;
@@ -179,10 +166,7 @@ class CheckinController extends Controller
                         $attendance->employee_id = auth()->user()->id;
                         $attendance->save();
 
-                        $attendance->last_att_status = "lst-1";
-                        $attendance->save();
-
-                        return response()->json(['status' => 200, 'message' => 'Checkin saved successfully!'], 200);
+                        return response()->json(['status' => 200, 'message' => 'Check-in saved successfully!'], 200);
                     }
                 }
             }
