@@ -8,7 +8,6 @@ use App\Models\Departure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 
 class CheckinController extends Controller
@@ -47,7 +46,7 @@ class CheckinController extends Controller
         $el_shorouk_academy = [
             [
                 "id" => 1,
-                "name" => "El Shorouk",
+                "name" => "El Shorouk Academy",
                 "points" => [
                     [30.120033340643701, 31.605739062001501],
                     [30.119964084139301, 31.605410391356202],
@@ -92,10 +91,10 @@ class CheckinController extends Controller
             ]
         ];
 
-        $el_shorouk_academy_2 = [
+        $mass_communication = [
             [
                 "id" => 2,
-                "name" => "El Shorouk 2",
+                "name" => "Mass Communication",
                 "points" => [
                     [30.113771288317199, 31.606623695118301],
                     [30.111426276586101, 31.607128051766601],
@@ -117,7 +116,7 @@ class CheckinController extends Controller
             ]
         ];
 
-        $allowedzones = [$el_shorouk_academy, $el_shorouk_academy_2];
+        $allowedzones = [$el_shorouk_academy, $mass_communication];
 
         return $allowedzones;
     }
@@ -142,7 +141,6 @@ class CheckinController extends Controller
                     // Check if the user's location is inside the polygon
                     if ($this->isInsidePolygon($zone["points"], $userLocation)) {
                         // Check if the user has already attended on the current day
-                        // $currentDate = Carbon::now()->format('Y-m-d');
                         $currentDate = date("d/m/Y", $request->att_Time);
                         $hasAttended = Attendance::where('employee_id', $loggedInUserId)
                             ->where('att_Date', $currentDate)
@@ -161,7 +159,7 @@ class CheckinController extends Controller
                         $attendance->att_Time = date("h:i:s A", $request->att_Time);
                         $attendance->att_address = $request->input('address');
                         $attendance->last_att_status = "lst-1";
-                        $attendance->att_comment = $request->comment;
+                        $attendance->att_comment = $request->att_comment;
                         $attendance->branch_id = $zone["id"];
                         $attendance->branch_name = $zone["name"];
                         $attendance->employee_id = auth()->user()->id;
