@@ -153,7 +153,7 @@ class CheckoutController extends Controller
                         $departure = new Departure();
                         $departure->dep_Latitude = $request->input('latitude');
                         $departure->dep_Longitude = $request->input('longitude');
-                        date_default_timezone_set("Africa/Cairo");
+                        date_default_timezone_set("Asia/Riyadh");
                         $date = $request->dep_Date;
                         $time = $request->dep_Time;
                         $departure->dep_Date = date("d/m/Y", $date);

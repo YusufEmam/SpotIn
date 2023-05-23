@@ -8,6 +8,7 @@ use App\Models\Departure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 
 class CheckinController extends Controller
@@ -141,9 +142,9 @@ class CheckinController extends Controller
                     // Check if the user's location is inside the polygon
                     if ($this->isInsidePolygon($zone["points"], $userLocation)) {
                         // Check if the user has already attended on the current day
-                        $currentDate = date("d/m/Y", $request->att_Time);
+                        $date = Carbon::now()->format('d/m/Y');
                         $hasAttended = Attendance::where('employee_id', $loggedInUserId)
-                            ->where('att_Date', $currentDate)
+                            ->where('att_Date', $date)
                             ->exists();
 
                         if ($hasAttended) {
@@ -154,8 +155,8 @@ class CheckinController extends Controller
                         $attendance = new Attendance();
                         $attendance->att_Latitude = $request->input('latitude');
                         $attendance->att_Longitude = $request->input('longitude');
-                        date_default_timezone_set("Africa/Cairo");
-                        $attendance->att_Date = $currentDate;
+                        date_default_timezone_set("Asia/Riyadh");
+                        $attendance->att_Date = $date;
                         $attendance->att_Time = date("h:i:s A", $request->att_Time);
                         $attendance->att_address = $request->input('address');
                         $attendance->last_att_status = "lst-1";
@@ -165,7 +166,7 @@ class CheckinController extends Controller
                         $attendance->employee_id = auth()->user()->id;
                         $attendance->save();
 
-                        return response()->json(['status' => 200, 'message' => 'Check-in saved successfully!'], 200);
+                        return response()->json(['status' => 200, 'message' => 'Checkin saved successfully!'], 200);
                     }
                 }
             }
