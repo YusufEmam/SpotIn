@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string("att_Latitude");
             $table->string("att_Longitude");
-            $table->date("att_Date");
-            $table->time("att_Time");
+            $table->string("att_Date");
+            $table->string("att_Time");
             $table->string("att_address")->nullable(true);
             $table->string("last_att_status")->default("Not defined");
             $table->string("att_comment")->nullable(true);

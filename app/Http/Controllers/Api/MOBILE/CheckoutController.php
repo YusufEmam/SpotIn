@@ -156,8 +156,8 @@ class CheckoutController extends Controller
                         date_default_timezone_set("Africa/Cairo");
                         $date = $request->dep_Date;
                         $time = $request->dep_Time;
-                        $departure->dep_Date = date("Y/m/d", $date);
-                        $departure->dep_Time = date("h:i:s", $time);
+                        $departure->dep_Date = date("d/m/Y", $date);
+                        $departure->dep_Time = date("h:i:s A", $time);
                         $departure->dep_address = $request->input('address');
                         $departure->last_dep_status = "lst-2";
                         $departure->dep_comment = $request->comment;

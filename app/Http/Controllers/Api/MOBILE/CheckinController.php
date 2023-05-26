@@ -142,9 +142,10 @@ class CheckinController extends Controller
                     // Check if the user's location is inside the polygon
                     if ($this->isInsidePolygon($zone["points"], $userLocation)) {
                         // Check if the user has already attended on the current day
-                        $currentDate = Carbon::now()->format('Y-m-d');
+                        // $currentDate = Carbon::now()->format('Y-m-d');
+                        $currentDate = date("d/m/Y", $request->att_Time);
                         $hasAttended = Attendance::where('employee_id', $loggedInUserId)
-                            ->whereDate('att_Date', $currentDate)
+                            ->where('att_Date', $currentDate)
                             ->exists();
 
                         if ($hasAttended) {
@@ -157,7 +158,7 @@ class CheckinController extends Controller
                         $attendance->att_Longitude = $request->input('longitude');
                         date_default_timezone_set("Africa/Cairo");
                         $attendance->att_Date = $currentDate;
-                        $attendance->att_Time = date("H:i:s", $request->att_Time);
+                        $attendance->att_Time = date("h:i:s A", $request->att_Time);
                         $attendance->att_address = $request->input('address');
                         $attendance->last_att_status = "lst-1";
                         $attendance->att_comment = $request->comment;

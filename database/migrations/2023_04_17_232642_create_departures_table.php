@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string("dep_Latitude");
             $table->string("dep_Longitude");
-            $table->date("dep_Date");
-            $table->time("dep_Time");
+            $table->string("dep_Date");
+            $table->string("dep_Time");
             $table->string("dep_address")->nullable(true);
             $table->string("last_dep_status")->default("Not defined");
             $table->string("dep_comment")->nullable(true);
