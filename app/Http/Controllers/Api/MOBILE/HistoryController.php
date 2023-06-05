@@ -26,7 +26,7 @@ class HistoryController extends Controller
         })
         ->select('attendances.branch_name', 'attendances.att_Date', 'attendances.att_Time', 'departures.dep_Time')
         ->where('attendances.employee_id', $user_id)
-        ->orderby('attendances.att_Date', 'DESC')
+        ->orderByRaw("STR_TO_DATE(attendances.att_Date, '%d/%m/%Y') DESC")
         ->get();
 
         $dataWithIds = [];
@@ -56,7 +56,7 @@ class HistoryController extends Controller
             })
             ->select('attendances.branch_name', 'attendances.att_Date', 'attendances.att_Time', 'departures.dep_Time', 'attendances.last_att_status')
             ->where('attendances.employee_id', $user_id)
-            ->orderby('attendances.att_Date', 'DESC')
+            ->orderByRaw("STR_TO_DATE(attendances.att_Date, '%d/%m/%Y') DESC")
             ->first();
 
             if (!$data->dep_Time) {
